@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetPro - Premium Sports Betting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+    <style>
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #2b5876;
+            --accent: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --mpesa: #00A650;
+            --airtel: #E30000;
+            --bitcoin: #F7931A;
+            --ethereum: #3C3C3D;
+            --usdt: #26A17B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        /* Admin Panel Styles */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 2000;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .admin-panel.open {
+            left: 0;
+        }
+        
+        .admin-toggle {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            z-index: 1999;
+        }
+        
+        .admin-header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-content {
+            padding: 1rem;
+        }
+        
+        .admin-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .admin-section h3 {
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .admin-form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .admin-form-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+        
+        .admin-form-group input, .admin-form-group select, .admin-form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .admin-btn {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        
+        .admin-btn.secondary {
+            background: var(--gray);
+        }
+        
+        .publish-status {
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .status-published {
+            background: rgba(40, 167, 69, 0.2);
+            color: var(--success);
+        }
+        
+        .status-draft {
+            background: rgba(255, 193, 7, 0.2);
+            color: var(--warning);
+        }
+        
+        /* Rest of your existing CSS remains the same */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* ... (all your existing CSS styles) ... */
+    </style>
+</head>
+<body>
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h2>BetPro Admin</h2>
+            <button id="closeAdminPanel">&times;</button>
+        </div>
+        <div class="admin-content">
+            <div class="admin-section">
+                <h3>Site Configuration</h3>
+                <div class="admin-form-group">
+                    <label for="siteTitle">Site Title</label>
+                    <input type="text" id="siteTitle" value="BetPro - Premium Sports Betting">
+                </div>
+                <div class="admin-form-group">
+                    <label for="welcomeMessage">Welcome Message</label>
+                    <textarea id="welcomeMessage" rows="3">Get 100% bonus on your first deposit up to KES 5,000</textarea>
+                </div>
+                <div class="admin-form-group">
+                    <label for="primaryColor">Primary Color</label>
+                    <input type="color" id="primaryColor" value="#1a2a6c">
+                </div>
+                <button class="admin-btn" id="saveSiteConfig">Save Configuration</button>
+            </div>
+            
+            <div class="admin-section">
+                <h3>Add New Event</h3>
+                <div class="admin-form-group">
+                    <label for="eventTeams">Teams</label>
+                    <input type="text" id="eventTeams" placeholder="e.g., Arsenal vs Chelsea">
+                </div>
+                <div class="admin-form-group">
+                    <label for="eventTime">Date & Time</label>
+                    <input type="datetime-local" id="eventTime">
+                </div>
+                <div class="admin-form-group">
+                    <label for="eventLeague">League</label>
+                    <input type="text" id="eventLeague" placeholder="e.g., English Premier League">
+                </div>
+                <div class="admin-form-group">
+                    <label for="odds1">Team 1 Odds</label>
+                    <input type="number" id="odds1" step="0.01" placeholder="2.50">
+                </div>
+                <div class="admin-form-group">
+                    <label for="oddsDraw">Draw Odds</label>
+                    <input type="number" id="oddsDraw" step="0.01" placeholder="3.20">
+                </div>
+                <div class="admin-form-group">
+                    <label for="odds2">Team 2 Odds</label>
+                    <input type="number" id="odds2" step="0.01" placeholder="2.80">
+                </div>
+                <button class="admin-btn" id="addEvent">Add Event</button>
+            </div>
+            
+            <div class="admin-section">
+                <h3>Publish Settings</h3>
+                <div class="publish-status status-draft" id="publishStatus">DRAFT - Not Published</div>
+                <button class="admin-btn" id="publishSite">Publish Website</button>
+                <button class="admin-btn secondary" id="exportSite">Export Website</button>
+                <button class="admin-btn secondary" id="importSite">Import Data</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="admin-toggle" id="adminToggle">
+        <i class="fas fa-cog"></i> Admin
+    </div>
+
+    <!-- Your existing HTML content (modals, header, content, footer) -->
+    <!-- ... -->
+
+    <script>
+        // Enhanced with admin functionality
+        const AdminManager = {
+            init: function() {
+                this.bindEvents();
+                this.loadConfig();
+            },
+            
+            bindEvents: function() {
+                document.getElementById('adminToggle').addEventListener('click', () => {
+                    document.getElementById('adminPanel').classList.toggle('open');
+                });
+                
+                document.getElementById('closeAdminPanel').addEventListener('click', () => {
+                    document.getElementById('adminPanel').classList.remove('open');
+                });
+                
+                document.getElementById('saveSiteConfig').addEventListener('click', this.saveConfig);
+                document.getElementById('addEvent').addEventListener('click', this.addEvent);
+                document.getElementById('publishSite').addEventListener('click', this.publishSite);
+                document.getElementById('exportSite').addEventListener('click', this.exportSite);
+                document.getElementById('importSite').addEventListener('click', this.importSite);
+                
+                // Color picker live update
+                document.getElementById('primaryColor').addEventListener('input', (e) => {
+                    document.documentElement.style.setProperty('--primary', e.target.value);
+                });
+            },
+            
+            loadConfig: function() {
+                const config = JSON.parse(localStorage.getItem('betpro_config') || '{}');
+                
+                if (config.siteTitle) {
+                    document.getElementById('siteTitle').value = config.siteTitle;
+                    document.title = config.siteTitle;
+                }
+                
+                if (config.welcomeMessage) {
+                    document.getElementById('welcomeMessage').value = config.welcomeMessage;
+                    // Update promo banner text
+                    const promoText = document.querySelector('.promo-content p');
+                    if (promoText) promoText.textContent = config.welcomeMessage;
+                }
+                
+                if (config.primaryColor) {
+                    document.getElementById('primaryColor').value = config.primaryColor;
+                    document.documentElement.style.setProperty('--primary', config.primaryColor);
+                }
+                
+                if (config.published) {
+                    document.getElementById('publishStatus').className = 'publish-status status-published';
+                    document.getElementById('publishStatus').textContent = 'PUBLISHED - Live';
+                }
+            },
+            
+            saveConfig: function() {
+                const config = {
+                    siteTitle: document.getElementById('siteTitle').value,
+                    welcomeMessage: document.getElementById('welcomeMessage').value,
+                    primaryColor: document.getElementById('primaryColor').value
+                };
+                
+                localStorage.setItem('betpro_config', JSON.stringify(config));
+                
+                // Apply changes
+                document.title = config.siteTitle;
+                const promoText = document.querySelector('.promo-content p');
+                if (promoText) promoText.textContent = config.welcomeMessage;
+                document.documentElement.style.setProperty('--primary', config.primaryColor);
+                
+                alert('Configuration saved successfully!');
+            },
+            
+            addEvent: function() {
+                const teams = document.getElementById('eventTeams').value;
+                const time = document.getElementById('eventTime').value;
+                const league = document.getElementById('eventLeague').value;
+                const odds1 = document.getElementById('odds1').value;
+                const oddsDraw = document.getElementById('oddsDraw').value;
+                const odds2 = document.getElementById('odds2').value;
+                
+                if (!teams || !time || !league || !odds1 || !oddsDraw || !odds2) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                
+                const event = {
+                    teams,
+                    time: new Date(time).toLocaleString(),
+                    league,
+                    odds: [odds1, oddsDraw, odds2]
+                };
+                
+                // Save to localStorage
+                const events = JSON.parse(localStorage.getItem('betpro_events') || '[]');
+                events.push(event);
+                localStorage.setItem('betpro_events', JSON.stringify(events));
+                
+                // Add to UI
+                AdminManager.renderEvent(event);
+                
+                // Clear form
+                document.getElementById('eventTeams').value = '';
+                document.getElementById('eventTime').value = '';
+                document.getElementById('eventLeague').value = '';
+                document.getElementById('odds1').value = '';
+                document.getElementById('oddsDraw').value = '';
+                document.getElementById('odds2').value = '';
+                
+                alert('Event added successfully!');
+            },
+            
+            renderEvent: function(event) {
+                const eventsContainer = document.querySelector('.events-container');
+                if (!eventsContainer) return;
+                
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                eventCard.innerHTML = `
+                    <div class="event-header">
+                        <div class="event-teams">${event.teams}</div>
+                        <div class="event-time">${event.time}</div>
+                    </div>
+                    <div class="event-league">${event.league}</div>
+                    <div class="bet-options">
+                        <div class="bet-btn" data-selection="${event.teams.split(' vs ')[0]}" data-odds="${event.odds[0]}">
+                            <div class="bet-type">1</div>
+                            <span class="odds">${event.odds[0]}</span>
+                        </div>
+                        <div class="bet-btn" data-selection="Draw" data-odds="${event.odds[1]}">
+                            <div class="bet-type">X</div>
+                            <span class="odds">${event.odds[1]}</span>
+                        </div>
+                        <div class="bet-btn" data-selection="${event.teams.split(' vs ')[1]}" data-odds="${event.odds[2]}">
+                            <div class="bet-type">2</div>
+                            <span class="odds">${event.odds[2]}</span>
+                        </div>
+                    </div>
+                `;
+                
+                eventsContainer.appendChild(eventCard);
+                
+                // Add event listeners to new bet buttons
+                eventCard.querySelectorAll('.bet-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        toggleBetSelection(btn);
+                    });
+                });
+            },
+            
+            publishSite: function() {
+                const config = JSON.parse(localStorage.getItem('betpro_config') || '{}');
+                config.published = true;
+                config.publishedAt = new Date().toISOString();
+                localStorage.setItem('betpro_config', JSON.stringify(config));
+                
+                document.getElementById('publishStatus').className = 'publish-status status-published';
+                document.getElementById('publishStatus').textContent = 'PUBLISHED - Live';
+                
+                alert('Website published successfully!');
+            },
+            
+            exportSite: function() {
+                const config = localStorage.getItem('betpro_config');
+                const events = localStorage.getItem('betpro_events');
+                const userData = localStorage.getItem('betpro_user');
+                
+                const data = {
+                    config: config ? JSON.parse(config) : {},
+                    events: events ? JSON.parse(events) : [],
+                    userData: userData ? JSON.parse(userData) : {}
+                };
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = 'betpro-data.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            },
+            
+            importSite: function() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            
+                            if (data.config) {
+                                localStorage.setItem('betpro_config', JSON.stringify(data.config));
+                            }
+                            
+                            if (data.events) {
+                                localStorage.setItem('betpro_events', JSON.stringify(data.events));
+                            }
+                            
+                            if (data.userData) {
+                                localStorage.setItem('betpro_user', JSON.stringify(data.userData));
+                            }
+                            
+                            alert('Data imported successfully! Reloading page...');
+                            location.reload();
+                        } catch (err) {
+                            alert('Error importing data: ' + err.message);
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            }
+        };
+
+        // Initialize admin panel
+        AdminManager.init();
+
+        // Your existing JavaScript code follows...
+        // ... (all your existing JavaScript code)
+    </script>
+</body>
+</html>
